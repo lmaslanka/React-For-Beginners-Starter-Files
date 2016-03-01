@@ -32,14 +32,64 @@ var App = React.createClass({
     this.setState({ fishes: this.state.fishes });
   },
 
+  loadSamples: function() {
+    console.log('called loadSamples');
+    this.setState({
+      fishes: require('./sample-fishes')
+    });
+  },
+
+  renderFish: function(key) {
+    return <Fish key={key} index={key} details={this.state.fishes[key]} />
+  },
+
   render: function() {
     return (
       <div className="catch-of-the-day">
         <div className="menu">
           <Header tagline="Fresh Seafood Market" />
+          <ul className="list-of-fishes">
+            {Object.keys(this.state.fishes).map(this.renderFish)}
+          </ul>
         </div>
         <Order />
-        <Inventory addFish={this.addFish} />
+        <Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
+      </div>
+    )
+  }
+});
+
+/*
+ * <Fish />
+ * Custom Element for Displaying an Fish
+ *
+ */
+var Fish = React.createClass({
+
+  render: function() {
+    return (
+      <li>
+        <img src={this.props.details.image} alt="" />
+      </li>
+    )
+  }
+});
+
+
+/*
+ * <Inventory />
+ * Custom Element for Displaying an Inventory
+ *
+ */
+
+var Inventory = React.createClass({
+
+  render: function() {
+    return (
+      <div>
+        <h2>Inventory</h2>
+        <AddFishForm {...this.props} />
+        <button onClick={this.props.loadSamples}>Load Sample Fishes</button>
       </div>
     )
   }
@@ -119,24 +169,6 @@ var Order = React.createClass({
   render: function() {
     return (
       <h2>Order</h2>
-    )
-  }
-});
-
-/*
- * <Inventory />
- * Custom Element for Displaying an Inventory
- *
- */
-
-var Inventory = React.createClass({
-
-  render: function() {
-    return (
-      <div>
-        <h2>Inventory</h2>
-        <AddFishForm {...this.props} />
-      </div>
     )
   }
 });
